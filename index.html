@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gentilés du Monde</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #13161d;
+  --bg3: #1a1e28;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --accent: #c8a96e;
+  --accent2: #7eb8f7;
+  --country-bg: rgba(200,169,110,0.12);
+  --country-color: #c8a96e;
+  --city-bg: rgba(126,184,247,0.10);
+  --city-color: #7eb8f7;
+  --radius: 12px;
+  --t: 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── CURSEUR CUSTOM ── */
+* { cursor: none !important; }
+
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background 0.2s, opacity 0.2s;
+  mix-blend-mode: difference;
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(200,169,110,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.35s cubic-bezier(.4,0,.2,1),
+              height 0.35s cubic-bezier(.4,0,.2,1),
+              border-color 0.3s,
+              transform 0.08s linear;
+}
+body.cursor-hover #cursor { width: 6px; height: 6px; background: var(--accent2); }
+body.cursor-hover #cursor-ring { width: 52px; height: 52px; border-color: rgba(126,184,247,0.6); }
+body.cursor-click #cursor { width: 4px; height: 4px; }
+body.cursor-click #cursor-ring { width: 22px; height: 22px; border-color: var(--accent); }
+body.cursor-text #cursor { width: 2px; height: 20px; border-radius: 1px; background: var(--accent2); }
+body.cursor-text #cursor-ring { width: 0; height: 0; opacity: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ambient glow */
+body::before {
+  content: '';
+  position: fixed; top: -30%; left: -10%;
+  width: 60vw; height: 60vw;
+  background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+  animation: ambientDrift1 18s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed; bottom: -20%; right: -10%;
+  width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(126,184,247,0.05) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+  animation: ambientDrift2 22s ease-in-out infinite alternate;
+}
+
+@keyframes ambientDrift1 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(5vw, 3vh) scale(1.1); }
+}
+@keyframes ambientDrift2 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-4vw, -5vh) scale(1.08); }
+}
+
+.page {
+  position: relative; z-index: 1;
+  max-width: 920px; margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+
+/* ── HEADER ── */
+.header { margin-bottom: 40px; }
+.header-eyebrow {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+  animation: fadeDown 0.7s ease both;
+}
+.header h1 {
+  font-family: 'Fraunces', serif; font-weight: 300;
+  font-size: clamp(32px, 5vw, 52px); line-height: 1.1;
+  letter-spacing: -0.02em;
+  animation: fadeDown 0.7s 0.08s ease both;
+  overflow: hidden;
+}
+.header h1 em { font-style: italic; color: var(--accent); }
+.header-sub {
+  margin-top: 10px; font-size: 14px; color: var(--muted); font-weight: 300;
+  animation: fadeDown 0.7s 0.15s ease both;
+}
+
+/* ── STATS ── */
+.stats {
+  display: flex; gap: 24px; margin-bottom: 40px;
+  flex-wrap: wrap;
+  animation: fadeDown 0.7s 0.2s ease both;
+}
+.stat { display: flex; flex-direction: column; gap: 3px; }
+.stat-num {
+  font-family: 'Fraunces', serif; font-size: 26px;
+  font-weight: 400; color: var(--accent); line-height: 1;
+}
+.stat-label {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.stat-sep { width: 1px; background: var(--border); align-self: stretch; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 4px;
+  width: fit-content;
+  animation: fadeDown 0.7s 0.25s ease both;
+  position: relative; overflow: hidden;
+}
+.tab-slider {
+  position: absolute; top: 4px; height: calc(100% - 8px);
+  background: var(--bg3);
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1);
+  z-index: 0;
+}
+.tab {
+  position: relative; z-index: 1;
+  padding: 7px 20px; font-size: 13px;
+  font-family: 'DM Sans', sans-serif; font-weight: 400;
+  background: none; border: none; color: var(--muted);
+  border-radius: 8px;
+  transition: color var(--t);
+  overflow: hidden;
+}
+.tab.active { color: var(--text); font-weight: 500; }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* Ripple */
+.tab .ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(200,169,110,0.18);
+  transform: scale(0); animation: rippleAnim 0.5s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+  animation: fadeDown 0.7s 0.3s ease both;
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-size: 14px; pointer-events: none;
+  transition: color var(--t);
+}
+.search-wrap:focus-within .search-icon { color: var(--accent); }
+
+input[type=search] {
+  width: 100%; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 11px 14px 11px 42px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+  outline: none; -webkit-appearance: none;
+  transition: border-color var(--t), box-shadow var(--t), background var(--t);
+}
+input[type=search]::placeholder { color: var(--muted); }
+input[type=search]:focus {
+  border-color: rgba(200,169,110,0.45);
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.08);
+  background: var(--bg3);
+}
+input[type=search]::-webkit-search-cancel-button { display: none; }
+
+/* Clear button */
+.search-clear {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--muted); font-size: 16px;
+  line-height: 1; opacity: 0; pointer-events: none;
+  transition: opacity var(--t), color var(--t);
+}
+.search-wrap.has-value .search-clear { opacity: 1; pointer-events: auto; }
+.search-clear:hover { color: var(--accent); }
+
+/* Select avec animation */
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾';
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-size: 12px; pointer-events: none;
+  transition: transform var(--t), color var(--t);
+}
+.select-wrap:focus-within::after { transform: translateY(-50%) rotate(180deg); color: var(--accent); }
+
+select {
+  appearance: none; -webkit-appearance: none;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 11px 38px 11px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+  outline: none; min-width: 210px;
+  transition: border-color var(--t), box-shadow var(--t), background var(--t);
+}
+select:focus {
+  border-color: rgba(200,169,110,0.45);
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.08);
+  background: var(--bg3);
+}
+select option { background: var(--bg2); }
+
+/* ── COUNT ── */
+.count-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+  animation: fadeDown 0.7s 0.35s ease both;
+}
+.count { font-size: 12px; color: var(--muted); font-weight: 300; }
+.count strong { color: var(--accent); font-weight: 500; }
+
+/* ── TABLE ── */
+.scroll {
+  max-height: 560px; overflow-y: auto;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  animation: fadeUp 0.7s 0.4s ease both;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.scroll::-webkit-scrollbar { width: 5px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+.scroll::-webkit-scrollbar-thumb:hover { background: rgba(200,169,110,0.3); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+thead tr { background: var(--bg2); position: sticky; top: 0; z-index: 2; }
+th {
+  padding: 12px 16px; font-size: 11px; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+  transition: color var(--t);
+}
+th.sortable { cursor: none; }
+th.sortable:hover { color: var(--accent); }
+th .sort-arrow { margin-left: 4px; opacity: 0.4; transition: opacity var(--t), transform var(--t); }
+th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--t), transform 0.15s;
+  animation: rowIn 0.32s ease both;
+  position: relative;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.026); }
+
+/* Ligne highlight au hover */
+tbody tr::after {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--accent);
+  transform: scaleY(0); transform-origin: center;
+  transition: transform 0.2s cubic-bezier(.4,0,.2,1);
+}
+tbody tr:hover::after { transform: scaleY(1); }
+
+td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
+
+.td-masc {
+  font-weight: 500; font-size: 14px;
+  transition: color var(--t);
+}
+tr:hover .td-masc { color: var(--accent); }
+.td-fem { color: var(--muted); font-size: 13px; }
+
+.place-cell { display: flex; align-items: center; gap: 10px; }
+.flag {
+  font-size: 22px; line-height: 1; flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+  display: inline-block;
+}
+tr:hover .flag { transform: scale(1.25) rotate(-4deg); }
+.place-name { font-weight: 400; }
+.place-country { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px;
+  font-weight: 500; letter-spacing: 0.04em; white-space: nowrap;
+  transition: transform var(--t), box-shadow var(--t);
+}
+tr:hover .badge { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+.badge-country { background: var(--country-bg); color: var(--country-color); border: 1px solid rgba(200,169,110,0.15); }
+.badge-city    { background: var(--city-bg);    color: var(--city-color);    border: 1px solid rgba(126,184,247,0.12); }
+.badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; opacity: 0.7;
+  animation: pulseDot 2.5s ease-in-out infinite;
+}
+tr:hover .badge-dot { animation: none; opacity: 1; }
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* Empty */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.4; animation: floatEmpty 3s ease-in-out infinite; }
+.empty-text { font-size: 14px; }
+@keyframes floatEmpty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── ANIMATIONS GLOBALES ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rowIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Transition de liste */
+.tbody-exit tbody tr { animation: rowOut 0.15s ease forwards; }
+@keyframes rowOut {
+  to { opacity: 0; transform: translateX(8px); }
+}
+
+/* ── TOOLTIP ── */
+.tooltip-global {
+  position: fixed; z-index: 9990;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px;
+  font-size: 12px; color: var(--text);
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.18s, transform 0.18s;
+  transform: translateY(4px);
+  white-space: nowrap;
+}
+.tooltip-global.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  .page { padding: 28px 16px 48px; }
+  .controls { flex-direction: column; }
+  select { min-width: unset; width: 100%; }
+  th:nth-child(2), td:nth-child(2) { display: none; }
+  * { cursor: auto !important; }
+  #cursor, #cursor-ring { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Curseur custom -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div class="tooltip-global" id="tooltip"></div>
+
+<div class="page">
+
+  <header class="header">
+    <div class="header-eyebrow">🌍 Encyclopédie des peuples</div>
+    <h1>Les <em>Gentilés</em><br>du Monde</h1>
+    <p class="header-sub">Noms des habitants par pays et par ville</p>
+  </header>
+
+  <div class="stats" id="stats-bar">
+    <div class="stat">
+      <span class="stat-num" id="s-total">—</span>
+      <span class="stat-label">Gentilés</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-num" id="s-pays">—</span>
+      <span class="stat-label">Pays</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-num" id="s-villes">—</span>
+      <span class="stat-label">Villes</span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab-slider" id="tab-slider"></div>
+    <button class="tab active" data-tab="all" onclick="switchTab('all', this)">Tout</button>
+    <button class="tab" data-tab="pays" onclick="switchTab('pays', this)">🌐 Pays</button>
+    <button class="tab" data-tab="ville" onclick="switchTab('ville', this)">🏙️ Villes</button>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap" id="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="search" placeholder="Rechercher un pays, une ville, un gentilé…" oninput="onSearch(this)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Effacer">✕</button>
+    </div>
+    <div class="select-wrap">
+      <select id="sort" onchange="render()">
+        <option value="alpha">Alphabétique (gentilé)</option>
+        <option value="pays">Par pays (A→Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="count-bar">
+    <div class="count" id="count"></div>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Gentilé</th>
+          <th>Féminin</th>
+          <th>Pays / Ville</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════ CURSEUR CUSTOM ══════════════════ */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px';
+  cur.style.top  = my + 'px';
+});
+
+(function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.addEventListener('mousedown', () => document.body.classList.add('cursor-click'));
+document.addEventListener('mouseup',   () => document.body.classList.remove('cursor-click'));
+
+document.querySelectorAll('button, .tab, select, .search-clear, tr').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+document.querySelectorAll('input').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-text'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-text'));
+});
+
+/* ══════════════════ TOOLTIP ══════════════════ */
+const tooltip = document.getElementById('tooltip');
+function showTooltip(text, x, y) {
+  tooltip.textContent = text;
+  tooltip.style.left = (x + 14) + 'px';
+  tooltip.style.top  = (y - 10) + 'px';
+  tooltip.classList.add('visible');
+}
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+/* ══════════════════ TAB SLIDER ══════════════════ */
+function updateSlider(activeTab) {
+  const slider = document.getElementById('tab-slider');
+  const rect = activeTab.getBoundingClientRect();
+  const container = document.getElementById('tabs').getBoundingClientRect();
+  slider.style.left = (rect.left - container.left) + 'px';
+  slider.style.width = rect.width + 'px';
+}
+
+/* Ripple sur les boutons */
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    const size = Math.max(btn.offsetWidth, btn.offsetHeight);
+    const rect = btn.getBoundingClientRect();
+    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+    btn.appendChild(r);
+    setTimeout(() => r.remove(), 500);
+    updateSlider(this);
+  });
+});
+
+/* Init slider sur le tab actif */
+window.addEventListener('load', () => {
+  const active = document.querySelector('.tab.active');
+  if (active) updateSlider(active);
+});
+
+/* ══════════════════ FLAGS ══════════════════ */
+const FLAGS = {
+  "Afghanistan":"🇦🇫","Afrique du Sud":"🇿🇦","Albanie":"🇦🇱","Algérie":"🇩🇿",
+  "Allemagne":"🇩🇪","Andorre":"🇦🇩","Angola":"🇦🇴","Antigua-et-Barbuda":"🇦🇬",
+  "Arabie saoudite":"🇸🇦","Argentine":"🇦🇷","Arménie":"🇦🇲","Australie":"🇦🇺",
+  "Autriche":"🇦🇹","Azerbaïdjan":"🇦🇿","Bahamas":"🇧🇸","Bahreïn":"🇧🇭",
+  "Bangladesh":"🇧🇩","Barbade":"🇧🇧","Belgique":"🇧🇪","Belize":"🇧🇿",
+  "Bénin":"🇧🇯","Bhoutan":"🇧🇹","Biélorussie":"🇧🇾","Bolivie":"🇧🇴",
+  "Bosnie-Herzégovine":"🇧🇦","Botswana":"🇧🇼","Brésil":"🇧🇷","Brunei":"🇧🇳",
+  "Bulgarie":"🇧🇬","Burkina Faso":"🇧🇫","Burundi":"🇧🇮","Cambodge":"🇰🇭",
+  "Cameroun":"🇨🇲","Canada":"🇨🇦","Cap-Vert":"🇨🇻","Chili":"🇨🇱",
+  "Chine":"🇨🇳","Chypre":"🇨🇾","Colombie":"🇨🇴","Comores":"🇰🇲",
+  "Congo":"🇨🇬","République démocratique du Congo":"🇨🇩","Costa Rica":"🇨🇷",
+  "Côte d'Ivoire":"🇨🇮","Croatie":"🇭🇷","Cuba":"🇨🇺","Danemark":"🇩🇰",
+  "Djibouti":"🇩🇯","Dominique":"🇩🇲","République dominicaine":"🇩🇴",
+  "Égypte":"🇪🇬","El Salvador":"🇸🇻","Émirats arabes unis":"🇦🇪",
+  "Équateur":"🇪🇨","Érythrée":"🇪🇷","Espagne":"🇪🇸","Estonie":"🇪🇪",
+  "Éthiopie":"🇪🇹","Fidji":"🇫🇯","Finlande":"🇫🇮","France":"🇫🇷",
+  "Gabon":"🇬🇦","Gambie":"🇬🇲","Géorgie":"🇬🇪","Ghana":"🇬🇭",
+  "Grenade":"🇬🇩","Grèce":"🇬🇷","Guatemala":"🇬🇹","Guinée":"🇬🇳",
+  "Guinée-Bissau":"🇬🇼","Guinée équatoriale":"🇬🇶","Guyana":"🇬🇾",
+  "Haïti":"🇭🇹","Honduras":"🇭🇳","Hongrie":"🇭🇺","Inde":"🇮🇳",
+  "Indonésie":"🇮🇩","Irak":"🇮🇶","Iran":"🇮🇷","Irlande":"🇮🇪",
+  "Islande":"🇮🇸","Israël":"🇮🇱","Italie":"🇮🇹","Jamaïque":"🇯🇲",
+  "Japon":"🇯🇵","Jordanie":"🇯🇴","Kazakhstan":"🇰🇿","Kenya":"🇰🇪",
+  "Kiribati":"🇰🇮","Kosovo":"🇽🇰","Koweït":"🇰🇼","Laos":"🇱🇦",
+  "Lesotho":"🇱🇸","Lettonie":"🇱🇻","Liban":"🇱🇧","Liberia":"🇱🇷",
+  "Libye":"🇱🇾","Liechtenstein":"🇱🇮","Lituanie":"🇱🇹","Luxembourg":"🇱🇺",
+  "Macédoine du Nord":"🇲🇰","Madagascar":"🇲🇬","Malaisie":"🇲🇾",
+  "Malawi":"🇲🇼","Maldives":"🇲🇻","Mali":"🇲🇱","Malte":"🇲🇹",
+  "Maroc":"🇲🇦","Maurice":"🇲🇺","Mauritanie":"🇲🇷","Mexique":"🇲🇽",
+  "Micronésie":"🇫🇲","Moldavie":"🇲🇩","Monaco":"🇲🇨","Mongolie":"🇲🇳",
+  "Monténégro":"🇲🇪","Mozambique":"🇲🇿","Namibie":"🇳🇦","Nauru":"🇳🇷",
+  "Népal":"🇳🇵","Nicaragua":"🇳🇮","Niger":"🇳🇪","Nigeria":"🇳🇬",
+  "Niue":"🇳🇺","Norvège":"🇳🇴","Nouvelle-Zélande":"🇳🇿","Oman":"🇴🇲",
+  "Ouganda":"🇺🇬","Ouzbékistan":"🇺🇿","Pakistan":"🇵🇰","Palaos":"🇵🇼",
+  "Palestine":"🇵🇸","Panama":"🇵🇦","Papouasie-Nouvelle-Guinée":"🇵🇬",
+  "Paraguay":"🇵🇾","Pays-Bas":"🇳🇱","Pérou":"🇵🇪","Philippines":"🇵🇭",
+  "Pologne":"🇵🇱","Portugal":"🇵🇹","Qatar":"🇶🇦","République centrafricaine":"🇨🇫",
+  "Roumanie":"🇷🇴","Royaume-Uni":"🇬🇧","Russie":"🇷🇺","Rwanda":"🇷🇼",
+  "Saint-Kitts-et-Nevis":"🇰🇳","Sainte-Lucie":"🇱🇨","Saint-Marin":"🇸🇲",
+  "Samoa":"🇼🇸","Sao Tomé-et-Principe":"🇸🇹","Sénégal":"🇸🇳","Serbie":"🇷🇸",
+  "Seychelles":"🇸🇨","Sierra Leone":"🇸🇱","Singapour":"🇸🇬","Slovaquie":"🇸🇰",
+  "Slovénie":"🇸🇮","Somalie":"🇸🇴","Soudan":"🇸🇩","Soudan du Sud":"🇸🇸",
+  "Sri Lanka":"🇱🇰","Suède":"🇸🇪","Suisse":"🇨🇭","Suriname":"🇸🇷",
+  "Eswatini":"🇸🇿","Syrie":"🇸🇾","Tadjikistan":"🇹🇯","Taïwan":"🇹🇼",
+  "Tanzanie":"🇹🇿","Tchad":"🇹🇩","Tchéquie":"🇨🇿","Thaïlande":"🇹🇭",
+  "Timor oriental":"🇹🇱","Togo":"🇹🇬","Tonga":"🇹🇴","Trinité-et-Tobago":"🇹🇹",
+  "Tunisie":"🇹🇳","Turkménistan":"🇹🇲","Tuvalu":"🇹🇻","Ukraine":"🇺🇦",
+  "Uruguay":"🇺🇾","Vanuatu":"🇻🇺","Vatican":"🇻🇦","Venezuela":"🇻🇪",
+  "Viêt Nam":"🇻🇳","Yémen":"🇾🇪","Zambie":"🇿🇲","Zimbabwe":"🇿🇼",
+  "Corée du Nord":"🇰🇵","Corée du Sud":"🇰🇷","Nouvelle-Calédonie":"🇳🇨",
+  "Îles Marshall":"🇲🇭","Hong Kong":"🇭🇰",
+};
+
+function getFlag(row) {
+  if (row[3]==='pays') return FLAGS[row[2]] || '🌐';
+  return FLAGS[row[4]] || FLAGS[row[2]] || '🏙️';
+}
+
+/* ══════════════════ DATA ══════════════════ */
+const DATA = [
+  ["Abidjanais","Abidjanaise","Abidjan","ville","Côte d'Ivoire"],
+  ["Aboujaien","Aboujaienne","Abou Dabi","ville","Émirats arabes unis"],
+  ["Accraïen","Accraïenne","Accra","ville","Ghana"],
+  ["Afghan","Afghane","Afghanistan","pays",null],
+  ["Africain du Sud","Africaine du Sud","Afrique du Sud","pays",null],
+  ["Albanais","Albanaise","Albanie","pays",null],
+  ["Algérois","Algéroise","Alger","ville","Algérie"],
+  ["Algérien","Algérienne","Algérie","pays",null],
+  ["Allemand","Allemande","Allemagne","pays",null],
+  ["Ammanien","Ammanienne","Amman","ville","Jordanie"],
+  ["Amstellodamois","Amstellodamoise","Amsterdam","ville","Pays-Bas"],
+  ["Andin","Andine","Andorre-la-Vieille","ville","Andorre"],
+  ["Andorran","Andorrane","Andorre","pays",null],
+  ["Angolais","Angolaise","Angola","pays",null],
+  ["Antiguayen","Antiguayenne","Antigua-et-Barbuda","pays",null],
+  ["Argentin","Argentine","Argentine","pays",null],
+  ["Arménien","Arménienne","Arménie","pays",null],
+  ["Asmaréen","Asmaréenne","Asmara","ville","Érythrée"],
+  ["Astanais","Astanaise","Astana","ville","Kazakhstan"],
+  ["Athénien","Athénienne","Athènes","ville","Grèce"],
+  ["Australien","Australienne","Australie","pays",null],
+  ["Autrichien","Autrichienne","Autriche","pays",null],
+  ["Azerbaïdjanais","Azerbaïdjanaise","Azerbaïdjan","pays",null],
+  ["Bagdadien","Bagdadienne","Bagdad","ville","Irak"],
+  ["Bahamien","Bahamienne","Bahamas","pays",null],
+  ["Bahreïni","Bahreïnie","Bahreïn","pays",null],
+  ["Bamakois","Bamakoise","Bamako","ville","Mali"],
+  ["Bangladais","Bangladaise","Bangladesh","pays",null],
+  ["Bangkokien","Bangkokienne","Bangkok","ville","Thaïlande"],
+  ["Banjulois","Banjuloise","Banjul","ville","Gambie"],
+  ["Barbadien","Barbadienne","Barbade","pays",null],
+  ["Bassetterrien","Bassetertienne","Basseterre","ville","Saint-Kitts-et-Nevis"],
+  ["Béijingois","Béijingoise","Pékin (Beijing)","ville","Chine"],
+  ["Belge","Belge","Belgique","pays",null],
+  ["Bélizien","Bélizienne","Belize","pays",null],
+  ["Belmopayen","Belmopayenne","Belmopan","ville","Belize"],
+  ["Béninois","Béninoise","Bénin","pays",null],
+  ["Berlinois","Berlinoise","Berlin","ville","Allemagne"],
+  ["Bhoutanais","Bhoutanaise","Bhoutan","pays",null],
+  ["Biélorusse","Biélorusse","Biélorussie","pays",null],
+  ["Biélorusse (Minsker)","Biélorusse (Minskoise)","Minsk","ville","Biélorussie"],
+  ["Bissaoguinéen","Bissaoguinéenne","Guinée-Bissau","pays",null],
+  ["Bissauléen","Bissauléenne","Bissau","ville","Guinée-Bissau"],
+  ["Bolivien","Bolivienne","Bolivie","pays",null],
+  ["Bosnien","Bosnienne","Bosnie-Herzégovine","pays",null],
+  ["Botswanais","Botswanaise","Botswana","pays",null],
+  ["Boudapestois","Boudapestoise","Budapest","ville","Hongrie"],
+  ["Brésiléen","Brésiléenne","Brasília","ville","Brésil"],
+  ["Brésilien","Brésilienne","Brésil","pays",null],
+  ["Bruxellois","Bruxelloise","Bruxelles","ville","Belgique"],
+  ["Bulgare","Bulgare","Bulgarie","pays",null],
+  ["Burkinabè","Burkinabè","Burkina Faso","pays",null],
+  ["Burundais","Burundaise","Burundi","pays",null],
+  ["Cairoté","Cairote","Le Caire","ville","Égypte"],
+  ["Cambodgien","Cambodgienne","Cambodge","pays",null],
+  ["Camerounais","Camerounaise","Cameroun","pays",null],
+  ["Canadien","Canadienne","Canada","pays",null],
+  ["Cap-Verdien","Cap-Verdienne","Cap-Vert","pays",null],
+  ["Caracasien","Caracasienne","Caracas","ville","Venezuela"],
+  ["Casablancais","Casablancaise","Casablanca","ville","Maroc"],
+  ["Centrafricain","Centrafricaine","République centrafricaine","pays",null],
+  ["Chilien","Chilienne","Chili","pays",null],
+  ["Chinois","Chinoise","Chine","pays",null],
+  ["Chypriote","Chypriote","Chypre","pays",null],
+  ["Colombien","Colombienne","Colombie","pays",null],
+  ["Comorien","Comorienne","Comores","pays",null],
+  ["Congolais","Congolaise","Congo","pays",null],
+  ["Congolais (RDC)","Congolaise (RDC)","République démocratique du Congo","pays",null],
+  ["Costaricien","Costaricienne","Costa Rica","pays",null],
+  ["Croate","Croate","Croatie","pays",null],
+  ["Cubain","Cubaine","Cuba","pays",null],
+  ["Dakarois","Dakaroise","Dakar","ville","Sénégal"],
+  ["Danois","Danoise","Danemark","pays",null],
+  ["Djibutien","Djibutienne","Djibouti","pays",null],
+  ["Dominicain","Dominicaine","République dominicaine","pays",null],
+  ["Dominiquais","Dominiquaise","Dominique","pays",null],
+  ["Dohalais","Dohalaise","Doha","ville","Qatar"],
+  ["Dubaïote","Dubaïote","Dubaï","ville","Émirats arabes unis"],
+  ["Dubliner","Dublinoise","Dublin","ville","Irlande"],
+  ["Égyptien","Égyptienne","Égypte","pays",null],
+  ["Émirati","Émiratie","Émirats arabes unis","pays",null],
+  ["Équatoguinéen","Équatoguinéenne","Guinée équatoriale","pays",null],
+  ["Équatorien","Équatorienne","Équateur","pays",null],
+  ["Érythréen","Érythréenne","Érythrée","pays",null],
+  ["Espagnol","Espagnole","Espagne","pays",null],
+  ["Est-Timorais","Est-Timoraise","Timor oriental","pays",null],
+  ["Estonien","Estonienne","Estonie","pays",null],
+  ["Éthiopien","Éthiopienne","Éthiopie","pays",null],
+  ["Fidjien","Fidjienne","Fidji","pays",null],
+  ["Finlandais","Finlandaise","Finlande","pays",null],
+  ["Français","Française","France","pays",null],
+  ["Freetownais","Freetownaise","Freetown","ville","Sierra Leone"],
+  ["Gabonais","Gabonaise","Gabon","pays",null],
+  ["Gambien","Gambienne","Gambie","pays",null],
+  ["Géorgien","Géorgienne","Géorgie","pays",null],
+  ["Ghanéen","Ghanéenne","Ghana","pays",null],
+  ["Grenadien","Grenadienne","Grenade","pays",null],
+  ["Grenoblois","Grenobloise","Grenoble","ville","France"],
+  ["Guatemaltèque","Guatemaltèque","Guatemala","pays",null],
+  ["Guinéen","Guinéenne","Guinée","pays",null],
+  ["Guyanais","Guyanaise","Guyana","pays",null],
+  ["Haïtien","Haïtienne","Haïti","pays",null],
+  ["Havanaïs","Havanaïse","La Havane","ville","Cuba"],
+  ["Hondurien","Hondurienne","Honduras","pays",null],
+  ["Hongkongais","Hongkongaise","Hong Kong","ville","Chine"],
+  ["Hongrois","Hongroise","Hongrie","pays",null],
+  ["Indien","Indienne","Inde","pays",null],
+  ["Indonésien","Indonésienne","Indonésie","pays",null],
+  ["Iranien","Iranienne","Iran","pays",null],
+  ["Irakien","Irakienne","Irak","pays",null],
+  ["Irlandais","Irlandaise","Irlande","pays",null],
+  ["Islamabadais","Islamabadaise","Islamabad","ville","Pakistan"],
+  ["Islandais","Islandaise","Islande","pays",null],
+  ["Israélien","Israélienne","Israël","pays",null],
+  ["Italien","Italienne","Italie","pays",null],
+  ["Jacmelien","Jacmelienne","Port-au-Prince","ville","Haïti"],
+  ["Jakartanais","Jakartanaise","Jakarta","ville","Indonésie"],
+  ["Jamaïcain","Jamaïcaine","Jamaïque","pays",null],
+  ["Japonais","Japonaise","Japon","pays",null],
+  ["Johanésbourgeois","Johannésbourgeoise","Johannesburg","ville","Afrique du Sud"],
+  ["Jordanien","Jordanienne","Jordanie","pays",null],
+  ["Kabouléen","Kabouléenne","Kaboul","ville","Afghanistan"],
+  ["Kambérois","Kambéroise","Canberra","ville","Australie"],
+  ["Kampalaïen","Kampalaïenne","Kampala","ville","Ouganda"],
+  ["Karatchien","Karatchienne","Karachi","ville","Pakistan"],
+  ["Kazakh","Kazakhe","Kazakhstan","pays",null],
+  ["Kenyan","Kenyane","Kenya","pays",null],
+  ["Kiribatien","Kiribatienne","Kiribati","pays",null],
+  ["Kosovar","Kosovare","Kosovo","pays",null],
+  ["Koweïtien","Koweïtienne","Koweït","pays",null],
+  ["Kuala Lumpurois","Kuala Lumpuroise","Kuala Lumpur","ville","Malaisie"],
+  ["Kyivien","Kyivienne","Kyiv","ville","Ukraine"],
+  ["Laagosien","Lagosienne","Lagos","ville","Nigeria"],
+  ["Laotien","Laotienne","Laos","pays",null],
+  ["Lésothien","Lésothienne","Lesotho","pays",null],
+  ["Letton","Lettonne","Lettonie","pays",null],
+  ["Libanais","Libanaise","Liban","pays",null],
+  ["Libérien","Libérienne","Liberia","pays",null],
+  ["Libyen","Libyenne","Libye","pays",null],
+  ["Liégeois","Liégeoise","Liège","ville","Belgique"],
+  ["Lima","Limée","Lima","ville","Pérou"],
+  ["Lisbonnin","Lisbonnine","Lisbonne","ville","Portugal"],
+  ["Lituanien","Lituanienne","Lituanie","pays",null],
+  ["Londrais","Londraise","Londres","ville","Royaume-Uni"],
+  ["Loméen","Loméenne","Lomé","ville","Togo"],
+  ["Lorméen","Lorméenne","Lomé","ville","Togo"],
+  ["Luandais","Luandaise","Luanda","ville","Angola"],
+  ["Luxembourgeois","Luxembourgeoise","Luxembourg","pays",null],
+  ["Lusakan","Lusakane","Lusaka","ville","Zambie"],
+  ["Macédonien","Macédonienne","Macédoine du Nord","pays",null],
+  ["Madrilène","Madrilène","Madrid","ville","Espagne"],
+  ["Malgache","Malgache","Madagascar","pays",null],
+  ["Malawien","Malawienne","Malawi","pays",null],
+  ["Malaisien","Malaisienne","Malaisie","pays",null],
+  ["Maldivien","Maldivienne","Maldives","pays",null],
+  ["Malien","Malienne","Mali","pays",null],
+  ["Maltais","Maltaise","Malte","pays",null],
+  ["Managuayen","Managuayenne","Managua","ville","Nicaragua"],
+  ["Manarois","Manaroise","Manama","ville","Bahreïn"],
+  ["Manillais","Manillaise","Manille","ville","Philippines"],
+  ["Maréchal-Îlais","Maréchal-Îlaise","Îles Marshall","pays",null],
+  ["Marocain","Marocaine","Maroc","pays",null],
+  ["Masérois","Maséroise","Maseru","ville","Lesotho"],
+  ["Mauritanien","Mauritanienne","Mauritanie","pays",null],
+  ["Mauricien","Mauricienne","Maurice","pays",null],
+  ["Mexicain","Mexicaine","Mexique","pays",null],
+  ["Micronésien","Micronésienne","Micronésie","pays",null],
+  ["Milanais","Milanaise","Milan","ville","Italie"],
+  ["Minkovicien","Minkovicienne","Minsk","ville","Biélorussie"],
+  ["Mogadiscien","Mogadiscienne","Mogadiscio","ville","Somalie"],
+  ["Moldave","Moldave","Moldavie","pays",null],
+  ["Monacais","Monacaise","Monaco","pays",null],
+  ["Mongol","Mongole","Mongolie","pays",null],
+  ["Monrovien","Monrovienne","Monrovia","ville","Liberia"],
+  ["Monténégrin","Monténégrine","Monténégro","pays",null],
+  ["Montévidéen","Montévidéenne","Montevideo","ville","Uruguay"],
+  ["Moscovite","Moscovite","Moscou","ville","Russie"],
+  ["Mozambicain","Mozambicaine","Mozambique","pays",null],
+  ["Mumbaïkar","Mumbaïkare","Mumbai","ville","Inde"],
+  ["Namibien","Namibienne","Namibie","pays",null],
+  ["Nairobian","Nairobianne","Nairobi","ville","Kenya"],
+  ["Nauruéen","Nauruéenne","Nauru","pays",null],
+  ["Néo-Delhiien","Néo-Delhiienne","New Delhi","ville","Inde"],
+  ["Néo-Zélandais","Néo-Zélandaise","Nouvelle-Zélande","pays",null],
+  ["Népalais","Népalaise","Népal","pays",null],
+  ["Nicaraguayen","Nicaraguayenne","Nicaragua","pays",null],
+  ["Nigérien","Nigérienne","Niger","pays",null],
+  ["Nigérian","Nigériane","Nigeria","pays",null],
+  ["Niouéen","Niouéenne","Niue","pays",null],
+  ["Nord-Coréen","Nord-Coréenne","Corée du Nord","pays",null],
+  ["Norvégien","Norvégienne","Norvège","pays",null],
+  ["Nouméapolitain","Nouméapolitaine","Nouméa","ville","Nouvelle-Calédonie"],
+  ["Nousoubitain","Nousoubitaine","Nauru","pays",null],
+  ["Nousoubian","Nousoubianne","Nairobi","ville","Kenya"],
+  ["Omanais","Omanaise","Oman","pays",null],
+  ["Ougandais","Ougandaise","Ouganda","pays",null],
+  ["Oulan-Batorien","Oulan-Batorienne","Oulan-Bator","ville","Mongolie"],
+  ["Ouzbek","Ouzbèke","Ouzbékistan","pays",null],
+  ["Pakistanais","Pakistanaise","Pakistan","pays",null],
+  ["Palauien","Palauienne","Palaos","pays",null],
+  ["Palestinien","Palestinienne","Palestine","pays",null],
+  ["Panamien","Panaméenne","Panama","pays",null],
+  ["Papouasien","Papouasienne","Papouasie-Nouvelle-Guinée","pays",null],
+  ["Paraguayen","Paraguayenne","Paraguay","pays",null],
+  ["Parisien","Parisienne","Paris","ville","France"],
+  ["Péruvien","Péruvienne","Pérou","pays",null],
+  ["Philippin","Philippine","Philippines","pays",null],
+  ["Polonais","Polonaise","Pologne","pays",null],
+  ["Port-Louisan","Port-Louisane","Port-Louis","ville","Maurice"],
+  ["Port-Moresbian","Port-Moresbienne","Port Moresby","ville","Papouasie-Nouvelle-Guinée"],
+  ["Port-Ofspagnien","Port-Ofspagnoise","Port of Spain","ville","Trinité-et-Tobago"],
+  ["Portoviejen","Portoviejenne","Quito","ville","Équateur"],
+  ["Portugais","Portugaise","Portugal","pays",null],
+  ["Praguois","Praguoise","Prague","ville","Tchéquie"],
+  ["Prétoriain","Prétoraine","Pretoria","ville","Afrique du Sud"],
+  ["Qatari","Qatarie","Qatar","pays",null],
+  ["Quiténien","Quiténienne","Quito","ville","Équateur"],
+  ["Rabatais","Rabataise","Rabat","ville","Maroc"],
+  ["Rhyadien","Rhyadienne","Riyad","ville","Arabie saoudite"],
+  ["Romaïn","Romaine","Rome","ville","Italie"],
+  ["Roumain","Roumaine","Roumanie","pays",null],
+  ["Russe","Russe","Russie","pays",null],
+  ["Rwandais","Rwandaise","Rwanda","pays",null],
+  ["Saint-Georgien","Saint-Georgienne","Georgetown","ville","Guyana"],
+  ["Saint-Lucien","Saint-Lucienne","Sainte-Lucie","pays",null],
+  ["Saint-Marinais","Saint-Marinaise","Saint-Marin","pays",null],
+  ["Sammarinais","Sammarinaise","Saint-Marin (ville)","ville","Saint-Marin"],
+  ["Salvadorien","Salvadorienne","El Salvador","pays",null],
+  ["Samoan","Samoane","Samoa","pays",null],
+  ["Sanaaïen","Sanaaïenne","Sanaa","ville","Yémen"],
+  ["São-Toméen","São-Toméenne","Sao Tomé-et-Principe","pays",null],
+  ["Sarajevien","Sarajevienne","Sarajevo","ville","Bosnie-Herzégovine"],
+  ["Saoudien","Saoudienne","Arabie saoudite","pays",null],
+  ["Sénégalais","Sénégalaise","Sénégal","pays",null],
+  ["Serbe","Serbe","Serbie","pays",null],
+  ["Seychellois","Seychelloise","Seychelles","pays",null],
+  ["Shanghaïen","Shanghaïenne","Shanghai","ville","Chine"],
+  ["Sierra-Léonais","Sierra-Léonaise","Sierra Leone","pays",null],
+  ["Singapourien","Singapourienne","Singapour","pays",null],
+  ["Skopjéen","Skopjéenne","Skopje","ville","Macédoine du Nord"],
+  ["Slovaque","Slovaque","Slovaquie","pays",null],
+  ["Slovène","Slovène","Slovénie","pays",null],
+  ["Somalien","Somalienne","Somalie","pays",null],
+  ["Soudanais","Soudanaise","Soudan","pays",null],
+  ["Soudanais du Sud","Soudanaise du Sud","Soudan du Sud","pays",null],
+  ["Sri-Lankais","Sri-Lankaise","Sri Lanka","pays",null],
+  ["Stockholmois","Stockholmoise","Stockholm","ville","Suède"],
+  ["Suédois","Suédoise","Suède","pays",null],
+  ["Suisse","Suisse","Suisse","pays",null],
+  ["Surinamais","Surinamaise","Suriname","pays",null],
+  ["Swazilandais","Swazilandaise","Eswatini","pays",null],
+  ["Sydney-Sider","Sydney-Sidère","Sydney","ville","Australie"],
+  ["Syrien","Syrienne","Syrie","pays",null],
+  ["Tadjik","Tadjike","Tadjikistan","pays",null],
+  ["Tananarivien","Tananarivienne","Antananarivo","ville","Madagascar"],
+  ["Tanzanien","Tanzanienne","Tanzanie","pays",null],
+  ["Taïwanais","Taïwanaise","Taïwan","pays",null],
+  ["Tchadien","Tchadienne","Tchad","pays",null],
+  ["Tchèque","Tchèque","Tchéquie","pays",null],
+  ["Téhéranais","Téhéranaise","Téhéran","ville","Iran"],
+  ["Tégucigalpain","Tégucigalpaine","Tegucigalpa","ville","Honduras"],
+  ["Tel-Avivien","Tel-Avivienne","Tel Aviv","ville","Israël"],
+  ["Thaïlandais","Thaïlandaise","Thaïlande","pays",null],
+  ["Tibisien","Tibisienne","Tbilissi","ville","Géorgie"],
+  ["Timorais","Timoraise","Dili","ville","Timor oriental"],
+  ["Togolais","Togolaise","Togo","pays",null],
+  ["Tokiote","Tokiote","Tokyo","ville","Japon"],
+  ["Tongan","Tongane","Tonga","pays",null],
+  ["Tunisois","Tunisoise","Tunis","ville","Tunisie"],
+  ["Trinidadien","Trinidadienne","Trinité-et-Tobago","pays",null],
+  ["Tunisien","Tunisienne","Tunisie","pays",null],
+  ["Turkménistanais","Turkménistanaise","Turkménistan","pays",null],
+  ["Tuvaluan","Tuvaluane","Tuvalu","pays",null],
+  ["Ukrainien","Ukrainienne","Ukraine","pays",null],
+  ["Uruguayen","Uruguayenne","Uruguay","pays",null],
+  ["Vanuatuan","Vanuatuane","Vanuatu","pays",null],
+  ["Varsoviain","Varsoviaine","Varsovie","ville","Pologne"],
+  ["Vaticanais","Vaticanaise","Vatican","pays",null],
+  ["Viennois","Viennoise","Vienne","ville","Autriche"],
+  ["Vietnamien","Vietnamienne","Viêt Nam","pays",null],
+  ["Vilniusien","Vilniusienne","Vilnius","ville","Lituanie"],
+  ["Wellingtonien","Wellingtonienne","Wellington","ville","Nouvelle-Zélande"],
+  ["Windhoékois","Windhoékoise","Windhoek","ville","Namibie"],
+  ["Yaounderois","Yaounderoise","Yaoundé","ville","Cameroun"],
+  ["Yéménite","Yéménite","Yémen","pays",null],
+  ["Zambien","Zambienne","Zambie","pays",null],
+  ["Zimbabwéen","Zimbabwéenne","Zimbabwe","pays",null],
+  ["Zimabaween","Zimabawéenne","Harare","ville","Zimbabwe"],
+];
+
+let currentTab = 'all';
+
+function dedup(arr) {
+  const seen = new Set();
+  return arr.filter(r => { const k=r[0]+r[2]; if(seen.has(k))return false; seen.add(k); return true; });
+}
+const CLEAN = dedup(DATA);
+
+/* Stats */
+document.getElementById('s-total').textContent = CLEAN.length;
+document.getElementById('s-pays').textContent = CLEAN.filter(r=>r[3]==='pays').length;
+document.getElementById('s-villes').textContent = CLEAN.filter(r=>r[3]==='ville').length;
+
+/* Compteur animé */
+function animCount(el, to) {
+  const from = parseInt(el.textContent) || 0;
+  if (from === to) return;
+  const dur = 400, step = 16, steps = dur/step;
+  let i = 0;
+  const inc = (to - from) / steps;
+  const t = setInterval(() => {
+    i++;
+    el.textContent = Math.round(from + inc * i);
+    if (i >= steps) { el.textContent = to; clearInterval(t); }
+  }, step);
+}
+
+/* Tab switch */
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateSlider(btn);
+  render();
+}
+
+/* Search */
+function onSearch(input) {
+  const wrap = document.getElementById('search-wrap');
+  wrap.classList.toggle('has-value', input.value.length > 0);
+  render();
+}
+function clearSearch() {
+  const inp = document.getElementById('search');
+  inp.value = '';
+  document.getElementById('search-wrap').classList.remove('has-value');
+  inp.focus();
+  render();
+}
+
+/* Tooltips sur les flags */
+function attachRowEvents() {
+  document.querySelectorAll('#tbody tr').forEach(tr => {
+    const flagEl = tr.querySelector('.flag');
+    const pay = tr.dataset.pays;
+    const lieu = tr.dataset.lieu;
+    if (!flagEl) return;
+    flagEl.addEventListener('mouseenter', e => {
+      showTooltip(pay ? `${lieu} — ${pay}` : lieu, e.clientX, e.clientY);
+    });
+    flagEl.addEventListener('mousemove', e => {
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top  = (e.clientY - 10) + 'px';
+    });
+    flagEl.addEventListener('mouseleave', hideTooltip);
+
+    tr.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    tr.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+}
+
+let renderTimer;
+function render() {
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(_render, 35);
+}
+
+function _render() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const sortBy = document.getElementById('sort').value;
+
+  let rows = CLEAN.filter(r => {
+    if (currentTab==='pays'  && r[3]!=='pays')  return false;
+    if (currentTab==='ville' && r[3]!=='ville') return false;
+    if (!q) return true;
+    return r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q) ||
+           r[2].toLowerCase().includes(q) || (r[4]&&r[4].toLowerCase().includes(q));
+  });
+
+  rows.sort((a,b) => sortBy==='alpha' ? a[0].localeCompare(b[0],'fr') : a[2].localeCompare(b[2],'fr'));
+
+  const n = rows.length;
+  const countEl = document.getElementById('count');
+  animCount(countEl.querySelector('strong') || { textContent: '' }, n);
+  countEl.innerHTML = `<strong>${n}</strong> entrée${n>1?'s':''} affichée${n>1?'s':''}`;
+
+  const tb = document.getElementById('tbody');
+
+  if (n === 0) {
+    tb.innerHTML = `<tr><td colspan="4"><div class="empty">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-text">Aucun résultat pour « ${q} »</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = rows.map((r, i) => {
+    const flag = getFlag(r);
+    const isPays = r[3]==='pays';
+    const delay = Math.min(i * 15, 280);
+    const sub = r[4] ? `<div class="place-country">${r[4]}</div>` : '';
+    return `<tr style="animation-delay:${delay}ms" data-lieu="${r[2]}" data-pays="${r[4]||''}">
+      <td class="td-masc">${r[0]}</td>
+      <td class="td-fem">${r[1]}</td>
+      <td><div class="place-cell">
+        <span class="flag">${flag}</span>
+        <div><div class="place-name">${r[2]}</div>${sub}</div>
+      </div></td>
+      <td><span class="badge ${isPays?'badge-country':'badge-city'}">
+        <span class="badge-dot"></span>${isPays?'Pays':'Ville'}
+      </span></td>
+    </tr>`;
+  }).join('');
+
+  attachRowEvents();
+}
+
+render();
+
+/* Init slider after DOM ready */
+requestAnimationFrame(() => {
+  const active = document.querySelector('.tab.active');
+  if (active) updateSlider(active);
+});
+</script>
+</body>
+</html>
