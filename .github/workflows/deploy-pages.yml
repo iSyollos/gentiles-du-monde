@@ -1,19 +1,11 @@
-name: Deploy static site to GitHub Pages
+name: GitHub Pages manual workflow
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: .
-          allow_empty_commit: true
+      - name: Skip automatic deployment
+        run: echo "No automatic deployment configured. Use GitHub Pages Settings to publish from main root."
